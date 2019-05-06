@@ -31,6 +31,8 @@ Route::namespace('Admin')->prefix('admin')->group(function () {
         Route::get('/permission', 'PermissionController@index')->name('admin.permission.index');
         Route::get('/permission/create', 'PermissionController@create')->name('admin.permission.create');
         Route::post('/permission/store', 'PermissionController@store')->name('admin.permission.store');
+        Route::get('/permission/edit', 'PermissionController@edit')->name('admin.permission.edit');
+        Route::post('/permission/update', 'PermissionController@update')->name('admin.permission.update');
     });
 });
 

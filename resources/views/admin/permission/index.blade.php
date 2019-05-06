@@ -25,6 +25,10 @@
     <table class="layui-table">
         <colgroup>
             <col width="50">
+            <col width="130">
+            <col>
+            <col width="110">
+            <col width="115">
         </colgroup>
         <thead>
         <tr>
@@ -40,19 +44,18 @@
             <tr>
                 <td>{{ $permission->id }}</td>
                 <td>{{ $permission->name }}</td>
-                <td>{{ $permission->routes }}</td>
-                <td>{{ $permission->created_at }}</td>
                 <td>
-                    {{--<a href="{{ route('admin.permission.edit') }}?user_id={{ $permission->id }}" class="layui-btn layui-btn-sm">编辑</a>--}}
-                    {{--@if($user->status==\App\Http\Models\User::STATUS_ENABLE)--}}
-                        {{--<button class="layui-btn layui-btn-warm layui-btn-sm" type="button"--}}
-                                {{--onclick="changeStatus({{ $user->id }})">禁用--}}
-                        {{--</button>--}}
-                    {{--@else--}}
-                        {{--<button class="layui-btn layui-btn-normal layui-btn-sm" type="button"--}}
-                                {{--onclick="changeStatus({{ $user->id }})">启用--}}
-                        {{--</button>--}}
-                    {{--@endif--}}
+                    @foreach(explode(',',$permission->routes) as $route)
+                        <span class="layui-badge layui-bg-green">{{ $route }}</span>
+                    @endforeach
+                </td>
+                <td>{{ $permission->created_at }}</td>
+                <td style="text-align: center;">
+                    <a href="{{ route('admin.permission.edit') }}?permission_id={{ $permission->id }}"
+                       class="layui-btn layui-btn-xs">编辑</a>
+                    <button class="layui-btn layui-btn-danger layui-btn-xs" type="button"
+                            onclick="del({{ $permission->id }})">删除
+                    </button>
                 </td>
             </tr>
         @endforeach
@@ -66,5 +69,9 @@
         layui.use(['layer'], function () {
             var layer = layui.layer;
         });
+
+        function del(id) {
+            console.log(id);
+        }
     </script>
 @endsection

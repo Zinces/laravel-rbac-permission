@@ -8,21 +8,31 @@
             <label class="layui-form-label">名称</label>
             <div class="layui-input-block">
                 <input type="text" name="name" required lay-verify="required" placeholder="请输入权限组名称"
-                       autocomplete="off" class="layui-input">
+                       autocomplete="off" class="layui-input"
+                       @if($permission)
+                       value="{{ $permission->name }}"
+                        @endif
+                >
+                @if($permission)
+                    <input type="hidden" name="id" value="{{ $permission->id }}">
+                @endif
             </div>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">路由</label>
             <div class="layui-input-block">
                 @foreach($routes as $route)
-                    <input type="checkbox" name="route[]" value="{{ $route }}" title="{{ $route }}">
+                    <input type="checkbox" name="route[]" value="{{ $route }}" title="{{ $route }}"
+                           @if($permission && in_array($route,$permission->routes))
+                           checked
+                            @endif
+                    >
                 @endforeach
             </div>
         </div>
         <div class="layui-form-item">
             <div class="layui-input-block">
                 <button class="layui-btn" lay-submit lay-filter="formDemo" type="button">立即提交</button>
-                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
             </div>
         </div>
     </form>
@@ -34,6 +44,16 @@
             var form = layui.form;
             var layer = layui.layer;
 
+            @if($error)
+            layer.msg('权限组信息有误', {
+                offset: '15px'
+                , icon: 2
+                , time: 2000
+            }, function () {
+                location.href = '{{ route('admin.permission.index') }}';
+            });
+            @endif
+
             //监听提交
             form.on('submit(formDemo)', function (data) {
                 $.ajaxSetup({
@@ -42,7 +62,7 @@
                     }
                 });
                 var load = layer.load();
-                $.post("{{ route('admin.permission.store') }}", data.field,
+                $.post("{{ route('admin.permission.update') }}", data.field,
                     function (data) {
                         layer.close(load);
                         if (data.code === 0) {

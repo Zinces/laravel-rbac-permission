@@ -13,7 +13,6 @@ use App\Library\ErrorCode;
 use App\Validate\UserStoreValidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Route;
 
 class UserController extends Controller
 {
