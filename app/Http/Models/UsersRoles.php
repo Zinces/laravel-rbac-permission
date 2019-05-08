@@ -9,15 +9,10 @@ namespace App\Http\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class UsersRoles extends Model
 {
-    protected $table = 'users';
+    protected $table = 'users_roles';
 
     protected $guarded = [];
 
-    const STATUS_ENABLE = 1;
-    const STATUS_DISABLE = 2;
-
-    const ADMIN_YES = 1;
-    const ADMIN_NO = 2;
 }

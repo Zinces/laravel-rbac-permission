@@ -7,6 +7,7 @@
 namespace App\Validate;
 
 
+use App\Http\Models\Users;
 use Illuminate\Validation\Rule;
 
 class UserStoreValidate extends BaseValidate
@@ -39,22 +40,18 @@ class UserStoreValidate extends BaseValidate
             'password_repeat' => 'required|same:password',
             'status'          => ['required', Rule::in([1, 2])],
             'administrator'   => ['required', Rule::in([1, 2])],
+            'roles'           => 'sometimes'
         ];
     }
 
     protected function customValidate()
     {
-        //$unit         = $this->requestData['unit'];
-        //$price_old    = $this->requestData['price_old'];
-        //$price        = $this->requestData['price'];
-        //$price_reason = $this->requestData['price_reason'];
-        //$weight       = $this->requestData['weight'];
-        //$volume       = $this->requestData['volume'];
-        //
-        //if ((count($unit) != count($price_old)) || (count($unit) != count($price)) || (count($unit) != count($price_reason)) || (count($unit) != count($weight)) || (count($unit) != count($volume))) {
-        //    $this->validator->errors()->add('unit', '规格信息有误');
-        //    return false;
-        //}
+        $roles         = $this->requestData['roles']??'';
+        $administrator = $this->requestData['administrator'];
 
+        if ($administrator == Users::ADMIN_NO && !$roles) {
+            $this->validator->errors()->add('roles', '请选择所属角色');
+            return false;
+        }
     }
 }

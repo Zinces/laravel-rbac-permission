@@ -27,12 +27,19 @@ Route::namespace('Admin')->prefix('admin')->group(function () {
         Route::post('/user/store', 'UserController@store')->name('admin.user.store');
         Route::post('/user/status', 'UserController@status')->name('admin.user.status');
         Route::get('/user/edit', 'UserController@edit')->name('admin.user.edit');
+        Route::post('/user/update', 'UserController@update')->name('admin.user.update');
 
         Route::get('/permission', 'PermissionController@index')->name('admin.permission.index');
         Route::get('/permission/create', 'PermissionController@create')->name('admin.permission.create');
         Route::post('/permission/store', 'PermissionController@store')->name('admin.permission.store');
         Route::get('/permission/edit', 'PermissionController@edit')->name('admin.permission.edit');
         Route::post('/permission/update', 'PermissionController@update')->name('admin.permission.update');
+
+        Route::get('/roles', 'RolesController@index')->name('admin.roles.index');
+        Route::get('/roles/create', 'RolesController@create')->name('admin.roles.create');
+        Route::post('/roles/store', 'RolesController@store')->name('admin.roles.store');
+        Route::get('/roles/edit', 'RolesController@edit')->name('admin.roles.edit');
+        Route::post('/roles/update', 'RolesController@update')->name('admin.roles.update');
     });
 });
 

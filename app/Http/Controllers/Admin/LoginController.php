@@ -8,7 +8,7 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\Controller;
-use App\Http\Models\User;
+use App\Http\Models\Users;
 use App\Library\ErrorCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -45,7 +45,7 @@ class LoginController extends Controller
 
         $data = $validator->getData();
 
-        $user = User::where('email', '=', $data['email'])->first();
+        $user = Users::where('email', '=', $data['email'])->first();
         if (!$user || !Hash::check($data['password'], $user->password)) {
             return response(['code' => ErrorCode::BAD_REQUEST, 'msg' => '登录名或密码有误']);
         }

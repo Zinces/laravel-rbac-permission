@@ -32,6 +32,7 @@
             <th>姓名</th>
             <th>邮箱</th>
             <th>是否管理员</th>
+            <th>所属角色</th>
             <th>状态</th>
             <th>创建时间</th>
             <th>操作</th>
@@ -43,12 +44,18 @@
                 <td>{{ $user->id }}</td>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
-                <td>{{ $user->administrator==\App\Http\Models\User::ADMIN_YES?'是':'否' }}</td>
-                <td>{{ $user->status==\App\Http\Models\User::STATUS_ENABLE?'启用':'禁用' }}</td>
+                <td>{{ $user->administrator==\App\Http\Models\Users::ADMIN_YES?'是':'否' }}</td>
+                <td>
+                    @foreach($user->roles as $role)
+                        <span class="layui-badge layui-bg-green">{{ $role->name }}</span>
+                    @endforeach
+                </td>
+                <td>{{ $user->status==\App\Http\Models\Users::STATUS_ENABLE?'启用':'禁用' }}</td>
                 <td>{{ $user->created_at }}</td>
                 <td>
-                    <a href="{{ route('admin.user.edit') }}?user_id={{ $user->id }}" class="layui-btn layui-btn-sm">编辑</a>
-                    @if($user->status==\App\Http\Models\User::STATUS_ENABLE)
+                    <a href="{{ route('admin.user.edit') }}?user_id={{ $user->id }}"
+                       class="layui-btn layui-btn-sm">编辑</a>
+                    @if($user->status==\App\Http\Models\Users::STATUS_ENABLE)
                         <button class="layui-btn layui-btn-warm layui-btn-sm" type="button"
                                 onclick="changeStatus({{ $user->id }})">禁用
                         </button>
