@@ -58,7 +58,7 @@
                         <dd><a href="{{ route('admin.user.index') }}">用户管理</a></dd>
                         <dd><a href="{{ route('admin.roles.index') }}">角色管理</a></dd>
                         <dd><a href="{{ route('admin.permission.index') }}">权限组管理</a></dd>
-                        <dd><a href="javascript:;">菜单管理</a></dd>
+                        <dd><a href="{{ route('admin.menu.index') }}">菜单管理</a></dd>
                     </dl>
                 </li>
                 <li class="layui-nav-item">
