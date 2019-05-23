@@ -8,6 +8,7 @@ namespace App\Validate;
 
 
 use App\Http\Models\Menu;
+use App\Http\Models\MenuRoles;
 use App\Http\Models\Roles;
 use App\Service\RouteService;
 
@@ -61,9 +62,16 @@ class MenuStoreValidate extends BaseValidate
             $this->validator->errors()->add('role', '请选择可见角色');
             return false;
         } else {
-            if (count($role) != Roles::whereIn('id', $role)->count()) {
-                $this->validator->errors()->add('route', '可见角色参数不正确');
-                return false;
+            if ($pid == 0) {
+                if (count($role) != Roles::whereIn('id', $role)->count()) {
+                    $this->validator->errors()->add('route', '可见角色参数不正确');
+                    return false;
+                }
+            } else {
+                if (count($role) != MenuRoles::where('menu_id', $pid)->whereIn('roles_id', $role)->count()) {
+                    $this->validator->errors()->add('route', '可见角色参数不正确');
+                    return false;
+                }
             }
         }
     }

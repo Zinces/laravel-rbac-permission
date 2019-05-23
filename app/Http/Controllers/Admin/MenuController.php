@@ -35,14 +35,12 @@ class MenuController extends Controller
                 'roles'      => array_column($m['roles'], 'name')
             ];
         }
-        //$menu_tree = [];
-        //Menu::menuTree($menu_arr, $menu_tree);
         return view('admin.menu.index', ['menu' => json_encode($menu_arr)]);
     }
 
     public function create()
     {
-        $top_menu = Menu::where('pid', '=', 0)->select('id', 'name')->get();
+        $top_menu = Menu::with('roles')->where('pid', '=', 0)->select('id', 'name')->get();
         $routes   = RouteService::getRoutes();
         $roles    = Roles::all();
         return view('admin.menu.create', ['top_menu' => $top_menu, 'routes' => $routes, 'roles' => $roles]);
@@ -110,7 +108,7 @@ class MenuController extends Controller
         $roles = Roles::select('id', 'name')->get();
 
         //获取顶级菜单，排除当前菜单
-        $top_menu = Menu::where('pid', '=', 0)->where('id', '!=', $menu_id)->select('id', 'name')->get();
+        $top_menu = Menu::with('roles')->where('pid', '=', 0)->where('id', '!=', $menu_id)->select('id', 'name')->get();
 
         //获取所有路由标识
         $routes = RouteService::getRoutes();

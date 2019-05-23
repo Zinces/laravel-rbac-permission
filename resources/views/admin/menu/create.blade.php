@@ -14,7 +14,7 @@
         <div class="layui-form-item" style="width: 500px;">
             <label class="layui-form-label">父级菜单</label>
             <div class="layui-input-block">
-                <select name="pid" lay-verify="required">
+                <select name="pid" lay-verify="required" lay-filter="pid">
                     <option value="0">顶级菜单</option>
                     @foreach($top_menu as $m)
                         <option value="{{ $m->id }}">{{ $m->name }}</option>
@@ -35,9 +35,18 @@
         </div>
         <div class="layui-form-item" style="width: 800px;">
             <label class="layui-form-label">可见角色</label>
-            <div class="layui-input-block">
-                @foreach($roles as $role)
-                    <input type="checkbox" name="role[]" value="{{ $role->id }}" title="{{ $role->name }}">
+            <div class="layui-input-block" id="pid_roles">
+                <div id="pid_0" style="display: block;">
+                    @foreach($roles as $role)
+                        <input type="checkbox" name="role[]" value="{{ $role->id }}" title="{{ $role->name }}">
+                    @endforeach
+                </div>
+                @foreach($top_menu as $menu)
+                    <div id="pid_{{ $menu->id }}" style="display: block;">
+                        @foreach($menu->roles as $role)
+                            <input type="checkbox" name="role[]" value="{{ $role->id }}" title="{{ $role->name }}">
+                        @endforeach
+                    </div>
                 @endforeach
             </div>
         </div>
@@ -55,6 +64,14 @@
         layui.use(['form', 'layer'], function () {
             var form = layui.form;
             var layer = layui.layer;
+
+            form.on('select(pid)', function (data) {
+                var pid = data.value;
+                $('#pid_roles div').hide();
+                $('#pid_roles input').removeAttr('checked');
+                $('#pid_' + pid).show();
+                form.render();
+            });
 
             //监听提交
             form.on('submit(formDemo)', function (data) {
