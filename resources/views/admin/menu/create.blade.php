@@ -42,7 +42,7 @@
                     @endforeach
                 </div>
                 @foreach($top_menu as $menu)
-                    <div id="pid_{{ $menu->id }}" style="display: block;">
+                    <div id="pid_{{ $menu->id }}" style="display: none;">
                         @foreach($menu->roles as $role)
                             <input type="checkbox" name="role[]" value="{{ $role->id }}" title="{{ $role->name }}">
                         @endforeach
