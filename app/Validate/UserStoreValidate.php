@@ -21,7 +21,7 @@ class UserStoreValidate extends BaseValidate
         'email.email'              => '邮箱格式不正确',
         'email.unique'             => '邮箱已经存在',
         'password.required'        => '请输入密码',
-        'password.digits_between'  => '密码长度为6-12个字符',
+        'password.between'         => '密码长度为6-12个字符',
         'password_repeat.required' => '请输入确认密码',
         'password_repeat.same'     => '两次填写的密码不一致',
         'status.required'          => '请选择状态',
@@ -36,7 +36,7 @@ class UserStoreValidate extends BaseValidate
         $this->rules = [
             'name'            => 'required|max:20',
             'email'           => 'required|email|unique:users,email',
-            'password'        => 'required|digits_between:6,12',
+            'password'        => 'required|between:6,12',
             'password_repeat' => 'required|same:password',
             'status'          => ['required', Rule::in([1, 2])],
             'administrator'   => ['required', Rule::in([1, 2])],
@@ -46,7 +46,7 @@ class UserStoreValidate extends BaseValidate
 
     protected function customValidate()
     {
-        $roles         = $this->requestData['roles']??'';
+        $roles         = $this->requestData['roles'] ?? '';
         $administrator = $this->requestData['administrator'];
 
         if ($administrator == Users::ADMIN_NO && !$roles) {

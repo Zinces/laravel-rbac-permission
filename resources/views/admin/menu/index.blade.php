@@ -38,9 +38,15 @@
                         }
                     },
                     {
-                        key: 'route',
                         title: '路由',
-                        align: 'left'
+                        align: 'left',
+                        template: function (item) {
+                            if (item.route != null) {
+                                return item.route;
+                            } else {
+                                return '';
+                            }
+                        }
                     },
                     {
                         title: '可见角色',

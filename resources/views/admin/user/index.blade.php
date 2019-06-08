@@ -50,7 +50,13 @@
                         <span class="layui-badge layui-bg-green">{{ $role->name }}</span>
                     @endforeach
                 </td>
-                <td>{{ $user->status==\App\Http\Models\Users::STATUS_ENABLE?'启用':'禁用' }}</td>
+                <td>
+                    @if($user->status==\App\Http\Models\Users::STATUS_ENABLE)
+                        <span style="color:#009688;">启用</span>
+                    @else
+                        <span style="color:#FF5722;">禁用</span>
+                    @endif
+                </td>
                 <td>{{ $user->created_at }}</td>
                 <td>
                     <a href="{{ route('admin.user.edit') }}?user_id={{ $user->id }}"

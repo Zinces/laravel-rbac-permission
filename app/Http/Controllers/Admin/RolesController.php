@@ -132,4 +132,9 @@ class RolesController extends Controller
             return response(['code' => ErrorCode::SQL_ERROR, 'msg' => '保存失败', 'data' => []]);
         }
     }
+
+    public function del(Request $request)
+    {
+
+    }
 }

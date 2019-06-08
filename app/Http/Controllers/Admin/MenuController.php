@@ -62,7 +62,7 @@ class MenuController extends Controller
 
             $menu->name  = $params['name'];
             $menu->pid   = $params['pid'];
-            $menu->route = $params['route'];
+            $menu->route = $params['pid'] == 0 ? null : $params['route'];
             $menu->save();
 
             $pivot = [];
@@ -132,7 +132,7 @@ class MenuController extends Controller
 
             $menu->name  = $params['name'];
             $menu->pid   = $params['pid'];
-            $menu->route = $params['route'];
+            $menu->route = $params['pid'] == 0 ? null : $params['route'];
             $menu->save();
 
             //删除旧的关联关系

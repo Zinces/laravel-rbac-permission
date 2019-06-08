@@ -15,5 +15,7 @@ class ErrorCode
 
     const SQL_ERROR = 4000;
 
+    const FORBIDDEN = 4003;
+
     const SERVER_ERROR = 5000;
 }

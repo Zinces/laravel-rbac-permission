@@ -10,7 +10,7 @@ use \App\Http\Models\Menu as MenuModel;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 
-class Menu
+class MenuMiddleware
 {
     /**
      * Handle an incoming request.
@@ -24,7 +24,7 @@ class Menu
     {
         $user = $request->session()->get('user');
 
-        $currRouteName = Route::currentRouteName();
+        //$currRouteName = Route::currentRouteName();
 
         $menu_tree = [];
         $menu_arr  = [];
@@ -37,7 +37,7 @@ class Menu
             //超管获取所有菜单
             MenuModel::menuTree($menu_arr, $menu_tree);
         } else {
-            $role_ids = UsersRoles::where('user_id', '=', $user['id'])->pluck('roles_id')->toArray();
+            $role_ids = UsersRoles::where('users_id', '=', $user['id'])->pluck('roles_id')->toArray();
             $menu_ids = MenuRoles::whereIn('roles_id', $role_ids)->pluck('menu_id')->toArray();
             $menus    = MenuModel::whereIn('id', $menu_ids)->get()->toArray();
 

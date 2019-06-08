@@ -31,11 +31,16 @@ class RolesStoreValidate extends BaseValidate
 
     protected function customValidate()
     {
+        if (!key_exists('permission', $this->requestData)) {
+            $this->validator->errors()->add('permission', '权限组参数不正确');
+            return false;
+        }
+
         $permissions = $this->requestData['permission'];
 
         $all_permissions = Permission::pluck('id')->toArray();
         if (count($permissions) != count(array_intersect($permissions, $all_permissions))) {
-            $this->validator->errors()->add('route', '权限组参数不正确');
+            $this->validator->errors()->add('permission', '权限组参数不正确');
             return false;
         }
     }

@@ -30,7 +30,7 @@ class MenuStoreValidate extends BaseValidate
         parent::__construct($request);
         $this->rules = [
             'name'  => 'required|unique:menu,name|max:20',
-            'route' => 'required',
+            'route' => 'nullable',
             'pid'   => 'required',
             'role'  => 'required',
         ];
@@ -52,10 +52,12 @@ class MenuStoreValidate extends BaseValidate
             }
         }
 
-        $routes = RouteService::getRoutes();
-        if (!in_array($route, $routes)) {
-            $this->validator->errors()->add('route', '路由标识不存在');
-            return false;
+        if ($pid != 0) {
+            $routes = RouteService::getRoutes();
+            if (!in_array($route, $routes)) {
+                $this->validator->errors()->add('route', '路由标识不存在');
+                return false;
+            }
         }
 
         if (!$role) {

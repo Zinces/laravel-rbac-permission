@@ -71,7 +71,17 @@
         });
 
         function del(id) {
-            console.log(id);
+            layer.confirm('你确定要删除这个角色吗？', {
+                title: '删除确认',
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                layer.confirm('该角色下的用户将失去对应的角色权限，确定要删除吗？', {
+                    title: '删除确认',
+                    btn: ['确定','取消'] //按钮
+                }, function(){
+
+                })
+            });
         }
     </script>
 @endsection

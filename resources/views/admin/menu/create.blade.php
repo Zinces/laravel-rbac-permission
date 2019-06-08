@@ -22,10 +22,10 @@
                 </select>
             </div>
         </div>
-        <div class="layui-form-item" style="width: 500px;">
+        <div class="layui-form-item" style="width: 500px; display: none;" id="route">
             <label class="layui-form-label">路由标识</label>
             <div class="layui-input-block">
-                <select name="route" lay-verify="required">
+                <select name="route">
                     <option value="">请选择路由标识</option>
                     @foreach($routes as $route)
                         <option value="{{ $route}}">{{ $route}}</option>
@@ -70,6 +70,12 @@
                 $('#pid_roles div').hide();
                 $('#pid_roles input').removeAttr('checked');
                 $('#pid_' + pid).show();
+
+                if(pid == 0){
+                    $('#route').hide();
+                }else{
+                    $('#route').show();
+                }
                 form.render();
             });
 

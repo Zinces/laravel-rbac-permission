@@ -28,10 +28,10 @@
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <a href="javascript:;">
-                    {{ session('user')['name'] }}
+                    你好，{{ session('user')['name'] }}
                 </a>
                 {{--<dl class="layui-nav-child">--}}
-                    {{--<dd><a href="">修改密码</a></dd>--}}
+                {{--<dd><a href="">修改密码</a></dd>--}}
                 {{--</dl>--}}
             </li>
             <li class="layui-nav-item">
@@ -52,17 +52,16 @@
         <div class="layui-side-scroll">
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="test">
-                {{--@foreach($route_tree as $route)--}}
-                <li class="layui-nav-item layui-nav-itemed">
-                    <a class="" href="javascript:;">权限管理</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="{{ route('admin.user.index') }}">用户管理</a></dd>
-                        <dd><a href="{{ route('admin.roles.index') }}">角色管理</a></dd>
-                        <dd><a href="{{ route('admin.permission.index') }}">权限组管理</a></dd>
-                        <dd><a href="{{ route('admin.menu.index') }}">菜单管理</a></dd>
-                    </dl>
-                </li>
-                {{--@endforeach--}}
+                @foreach($menu_tree as $menu)
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a class="" href="javascript:;">{{ $menu['name'] }}</a>
+                        <dl class="layui-nav-child">
+                            @foreach($menu['children'] as $child)
+                                <dd><a href="{{ route($child['route']) }}">{{ $child['name'] }}</a></dd>
+                            @endforeach
+                        </dl>
+                    </li>
+                @endforeach
             </ul>
         </div>
     </div>
