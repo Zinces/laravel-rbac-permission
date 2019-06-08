@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Library\ErrorCode;
+use App\Library\Response;
 use Closure;
 
 class CanMiddleware
@@ -19,7 +19,7 @@ class CanMiddleware
     {
         if (!can()) {
             if ($request->ajax()) {
-                return response(['code' => ErrorCode::FORBIDDEN, 'msg' => '您没有被授权访问', 'data' => []]);
+                return response(['code' => Response::FORBIDDEN, 'msg' => '您没有被授权访问', 'data' => []]);
             }
             return redirect(route('admin.forbidden.white'));
         }

@@ -8,15 +8,17 @@ namespace App\Http\Controllers\Admin;
 
 
 use App\Http\Controllers\Controller;
+use App\Http\Models\MenuRoles;
 use App\Http\Models\Permission;
 use App\Http\Models\RolePermission;
 use App\Http\Models\Roles;
-use App\Library\ErrorCode;
+use App\Library\Response;
 use App\Validate\RolesStoreValidate;
 use App\Validate\RolesUpdateValidate;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class RolesController extends Controller
 {
@@ -37,7 +39,7 @@ class RolesController extends Controller
         $validate = new RolesStoreValidate($request);
 
         if (!$validate->goCheck()) {
-            return response(['code' => ErrorCode::BAD_REQUEST, 'msg' => $validate->errors->first(), 'data' => []]);
+            return Response::response(Response::PARAM_ERROR, $validate->errors->first());
         }
 
         $params = $validate->requestData;
@@ -61,10 +63,10 @@ class RolesController extends Controller
             RolePermission::insert($pivot);
 
             DB::commit();
-            return response(['code' => ErrorCode::OK, 'msg' => 'success', 'data' => []]);
+            return Response::response();
         } catch (QueryException $e) {
             DB::rollBack();
-            return response(['code' => ErrorCode::SQL_ERROR, 'msg' => '保存失败', 'data' => []]);
+            return Response::response(Response::SQL_ERROR);
         }
     }
 
@@ -99,7 +101,7 @@ class RolesController extends Controller
         $validate = new RolesUpdateValidate($request);
 
         if (!$validate->goCheck()) {
-            return response(['code' => ErrorCode::BAD_REQUEST, 'msg' => $validate->errors->first(), 'data' => []]);
+            return Response::response(Response::PARAM_ERROR, $validate->errors->first());
         }
 
         $params = $validate->requestData;
@@ -112,7 +114,7 @@ class RolesController extends Controller
             $roles->save();
 
             //删除旧的关联关系
-            RolePermission::where('roles_id','=',$params['id'])->delete();
+            RolePermission::where('roles_id', '=', $params['id'])->delete();
 
             $pivot = [];
             foreach ($params['permission'] as $permission) {
@@ -126,15 +128,32 @@ class RolesController extends Controller
             RolePermission::insert($pivot);
 
             DB::commit();
-            return response(['code' => ErrorCode::OK, 'msg' => 'success', 'data' => []]);
+            return Response::response();
         } catch (QueryException $e) {
             DB::rollBack();
-            return response(['code' => ErrorCode::SQL_ERROR, 'msg' => '保存失败', 'data' => []]);
+            Log::error('更新角色数据库异常', [$e->getMessage()]);
+            return Response::response(Response::SQL_ERROR);
         }
     }
 
-    public function del(Request $request)
+    public function delete(Request $request)
     {
+        $id = $request->get('id');
+        if (!$id) {
+            return Response::response(Response::PARAM_ERROR);
+        }
 
+        DB::beginTransaction();
+        try {
+            Roles::where('id', $id)->delete();
+            RolePermission::where('roles_id', $id)->delete();
+            MenuRoles::where('roles_id', $id)->delete();
+            DB::commit();
+            return Response::response();
+        } catch (QueryException $e) {
+            DB::rollBack();
+            Log::error('删除角色数据库异常', [$e->getMessage()]);
+            return Response::response(Response::SQL_ERROR);
+        }
     }
 }

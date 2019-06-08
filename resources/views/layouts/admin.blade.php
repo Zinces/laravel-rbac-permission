@@ -56,9 +56,11 @@
                     <li class="layui-nav-item layui-nav-itemed">
                         <a class="" href="javascript:;">{{ $menu['name'] }}</a>
                         <dl class="layui-nav-child">
-                            @foreach($menu['children'] as $child)
-                                <dd><a href="{{ route($child['route']) }}">{{ $child['name'] }}</a></dd>
-                            @endforeach
+                            @if(key_exists('children',$menu))
+                                @foreach($menu['children'] as $child)
+                                    <dd><a href="{{ route($child['route']) }}">{{ $child['name'] }}</a></dd>
+                                @endforeach
+                            @endif
                         </dl>
                     </li>
                 @endforeach

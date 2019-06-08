@@ -11,7 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\Roles;
 use App\Http\Models\Users;
 use App\Http\Models\UsersRoles;
-use App\Library\ErrorCode;
+use App\Library\Response;
 use App\Validate\UserStoreValidate;
 use App\Validate\UserUpdateValidate;
 use Illuminate\Database\QueryException;
@@ -37,7 +37,7 @@ class UserController extends Controller
     {
         $validate = new UserStoreValidate($request);
         if (!$validate->goCheck()) {
-            return response(['code' => ErrorCode::BAD_REQUEST, 'msg' => $validate->errors->first(), 'data' => []]);
+            return Response::response(Response::PARAM_ERROR, $validate->errors->first());
         }
 
         $params = $validate->requestData;
@@ -69,10 +69,10 @@ class UserController extends Controller
             }
 
             DB::commit();
-            return response(['code' => ErrorCode::OK, 'msg' => 'success', 'data' => []]);
+            return Response::response();
         } catch (QueryException $e) {
             DB::rollBack();
-            return response(['code' => ErrorCode::SQL_ERROR, 'msg' => '保存失败', 'data' => []]);
+            return Response::response(Response::SQL_ERROR);
         }
 
     }
@@ -104,7 +104,7 @@ class UserController extends Controller
     {
         $validate = new UserUpdateValidate($request);
         if (!$validate->goCheck()) {
-            return response(['code' => ErrorCode::BAD_REQUEST, 'msg' => $validate->errors->first(), 'data' => []]);
+            return Response::response(Response::PARAM_ERROR, $validate->errors->first());
         }
 
         $params = $validate->requestData;
@@ -142,10 +142,10 @@ class UserController extends Controller
             }
 
             DB::commit();
-            return response(['code' => ErrorCode::OK, 'msg' => 'success', 'data' => []]);
+            return Response::response();
         } catch (QueryException $e) {
             DB::rollBack();
-            return response(['code' => ErrorCode::SQL_ERROR, 'msg' => '保存失败', 'data' => []]);
+            return Response::response(Response::SQL_ERROR);
         }
 
     }
@@ -159,30 +159,30 @@ class UserController extends Controller
     {
         $user_id = $request->get('user_id');
         if (!$user_id) {
-            return response(['code' => ErrorCode::BAD_REQUEST, 'msg' => '参数错误', 'data' => []]);
+            return Response::response(Response::PARAM_ERROR);
         }
 
         if ($user_id == session('user')['id']) {
-            return response(['code' => ErrorCode::BAD_REQUEST, 'msg' => '你不能修改自己的状态', 'data' => []]);
+            return Response::response(Response::BAD_REQUEST, '你不能修改自己的状态');
         }
 
         $user = Users::find($user_id);
         if (!$user) {
-            return response(['code' => ErrorCode::BAD_REQUEST, 'msg' => '用户信息错误', 'data' => []]);
+            return Response::response(Response::BAD_REQUEST);
         }
 
         if ($user->administrator == Users::ADMIN_YES && $user->status == Users::STATUS_ENABLE) {
             //除了当前管理员，至少有一个启用状态的管理员
             if (Users::where('id', '!=', $user_id)->where('administrator', '=', Users::ADMIN_YES)->where('status', '=', Users::STATUS_ENABLE)->count() <= 0) {
-                return response(['code' => ErrorCode::BAD_REQUEST, 'msg' => '至少有一个管理员', 'data' => []]);
+                return Response::response(Response::BAD_REQUEST, '至少有一个管理员');
             }
         }
 
         $user->status = $user->status == Users::STATUS_ENABLE ? Users::STATUS_DISABLE : Users::STATUS_ENABLE;
 
         if (!$user->save()) {
-            return response(['code' => ErrorCode::SQL_ERROR, 'msg' => '操作失败', 'data' => []]);
+            return Response::response(Response::SQL_ERROR);
         }
-        return response(['code' => ErrorCode::OK, 'msg' => 'success', 'data' => []]);
+        return Response::response();
     }
 }

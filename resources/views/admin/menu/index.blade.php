@@ -70,7 +70,11 @@
                         align: 'center',
                         width: '100px',
                         template: function (item) {
-                            return '<a href="{{ route('admin.menu.edit') }}?menu_id=' + item.id + '" class="layui-btn layui-btn-xs">编辑</a> <button class="layui-btn layui-btn-danger layui-btn-xs" type="button" onclick="del(' + item.id + ')">删除 </button>';
+                            var html = '<a href="{{ route('admin.menu.edit') }}?menu_id=' + item.id + '" class="layui-btn layui-btn-xs">编辑</a>';
+                            if (item.id != 1 && item.pid != 1) {
+                                html += '<button class="layui-btn layui-btn-danger layui-btn-xs" type="button" onclick="del(' + item.id + ')">删除 </button>';
+                            }
+                            return html;
                         }
                     },
                 ]
@@ -79,7 +83,36 @@
         });
 
         function del(id) {
-            console.log(id);
+            layer.confirm('你确定要删除这个菜单吗？', {
+                title: '删除确认',
+                btn: ['确定', '取消'] //按钮
+            }, function () {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                });
+                var load = layer.load();
+                $.post("{{ route('admin.menu.delete') }}", {id: id},
+                    function (data) {
+                        layer.close(load);
+                        if (data.code === 0) {
+                            layer.msg('操作成功', {
+                                offset: '15px'
+                                , icon: 1
+                                , time: 1000
+                            }, function () {
+                                location.href = '{{ route('admin.menu.index') }}';
+                            });
+                        } else {
+                            layer.msg(data.msg, {
+                                offset: '15px'
+                                , icon: 2
+                                , time: 2000
+                            });
+                        }
+                    });
+            });
         }
     </script>
 @endsection

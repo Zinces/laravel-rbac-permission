@@ -37,18 +37,21 @@ Route::namespace('Admin')->prefix('admin')->group(function () {
             Route::post('/permission/store', 'PermissionController@store')->name('admin.permission.store');
             Route::get('/permission/edit', 'PermissionController@edit')->name('admin.permission.edit');
             Route::post('/permission/update', 'PermissionController@update')->name('admin.permission.update');
+            Route::post('/permission/delete', 'PermissionController@delete')->name('admin.permission.delete');
 
             Route::get('/roles', 'RolesController@index')->name('admin.roles.index');
             Route::get('/roles/create', 'RolesController@create')->name('admin.roles.create');
             Route::post('/roles/store', 'RolesController@store')->name('admin.roles.store');
             Route::get('/roles/edit', 'RolesController@edit')->name('admin.roles.edit');
             Route::post('/roles/update', 'RolesController@update')->name('admin.roles.update');
+            Route::post('/roles/delete', 'RolesController@delete')->name('admin.roles.delete');
 
             Route::get('/menu', 'MenuController@index')->name('admin.menu.index');
             Route::get('/menu/create', 'MenuController@create')->name('admin.menu.create');
             Route::post('/menu/store', 'MenuController@store')->name('admin.menu.store');
             Route::get('/menu/edit', 'MenuController@edit')->name('admin.menu.edit');
             Route::post('/menu/update', 'MenuController@update')->name('admin.menu.update');
+            Route::post('/menu/delete', 'MenuController@delete')->name('admin.menu.delete');
         });
     });
 });

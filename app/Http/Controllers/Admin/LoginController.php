@@ -9,7 +9,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Models\Users;
-use App\Library\ErrorCode;
+use App\Library\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -40,19 +40,19 @@ class LoginController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response(['code' => ErrorCode::BAD_REQUEST, 'msg' => $validator->errors()->first(), 'data' => []]);
+            return Response::response(Response::PARAM_ERROR, $validator->errors()->first());
         }
 
         $data = $validator->getData();
 
         $user = Users::where('email', '=', $data['email'])->first();
         if (!$user || !Hash::check($data['password'], $user->password)) {
-            return response(['code' => ErrorCode::BAD_REQUEST, 'msg' => '登录名或密码有误']);
+            return Response::response(Response::BAD_REQUEST, '登录名或密码有误');
         }
 
         session(['user' => $user]);
 
-        return response(['code' => ErrorCode::OK, 'msg' => '登录成功']);
+        return Response::response();
     }
 
     public function logout(Request $request)

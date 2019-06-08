@@ -71,7 +71,41 @@
         });
 
         function del(id) {
-            console.log(id);
+            layer.confirm('你确定要删除这个角色吗？', {
+                title: '删除确认',
+                btn: ['确定', '取消'] //按钮
+            }, function () {
+                layer.confirm('该权限组下的橘色用户将失去对应的权限，确定要删除吗？', {
+                    title: '删除确认',
+                    btn: ['确定', '取消'] //按钮
+                }, function () {
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    });
+                    var load = layer.load();
+                    $.post("{{ route('admin.permission.delete') }}", {id: id},
+                        function (data) {
+                            layer.close(load);
+                            if (data.code === 0) {
+                                layer.msg('操作成功', {
+                                    offset: '15px'
+                                    , icon: 1
+                                    , time: 1000
+                                }, function () {
+                                    location.href = '{{ route('admin.permission.index') }}';
+                                });
+                            } else {
+                                layer.msg(data.msg, {
+                                    offset: '15px'
+                                    , icon: 2
+                                    , time: 2000
+                                });
+                            }
+                        });
+                })
+            });
         }
     </script>
 @endsection

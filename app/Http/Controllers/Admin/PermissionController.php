@@ -9,11 +9,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Models\Permission;
-use App\Library\ErrorCode;
+use App\Http\Models\RolePermission;
+use App\Library\Response;
 use App\Service\RouteService;
 use App\Validate\PermissionStoreValidate;
 use App\Validate\PermissionUpdateValidate;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PermissionController extends Controller
 {
@@ -34,7 +38,7 @@ class PermissionController extends Controller
         $validate = new PermissionStoreValidate($request);
 
         if (!$validate->goCheck()) {
-            return response(['code' => ErrorCode::BAD_REQUEST, 'msg' => $validate->errors->first(), 'data' => []]);
+            return Response::response(Response::PARAM_ERROR, $validate->errors->first());
         }
 
         $params = $validate->requestData;
@@ -45,9 +49,9 @@ class PermissionController extends Controller
         $permission->routes = implode(',', $params['route']);
 
         if (!$permission->save()) {
-            return response(['code' => ErrorCode::SQL_ERROR, 'msg' => '保存失败', 'data' => []]);
+            return Response::response(Response::SQL_ERROR);
         }
-        return response(['code' => ErrorCode::OK, 'msg' => 'success', 'data' => []]);
+        return Response::response();
     }
 
     public function edit(Request $request)
@@ -78,7 +82,7 @@ class PermissionController extends Controller
         $validate = new PermissionUpdateValidate($request);
 
         if (!$validate->goCheck()) {
-            return response(['code' => ErrorCode::BAD_REQUEST, 'msg' => $validate->errors->first(), 'data' => []]);
+            return Response::response(Response::PARAM_ERROR, $validate->errors->first());
         }
 
         $params = $validate->requestData;
@@ -89,8 +93,28 @@ class PermissionController extends Controller
         $permission->routes = implode(',', $params['route']);
 
         if (!$permission->save()) {
-            return response(['code' => ErrorCode::SQL_ERROR, 'msg' => '保存失败', 'data' => []]);
+            return Response::response(Response::SQL_ERROR);
         }
-        return response(['code' => ErrorCode::OK, 'msg' => 'success', 'data' => []]);
+        return Response::response();
+    }
+
+    public function delete(Request $request)
+    {
+        $id = $request->get('id');
+        if (!$id) {
+            return Response::response(Response::PARAM_ERROR);
+        }
+
+        DB::beginTransaction();
+        try {
+            Permission::where('id', $id)->delete();
+            RolePermission::where('roles_id', $id)->delete();
+            DB::commit();
+            return Response::response();
+        } catch (QueryException $e) {
+            DB::rollBack();
+            Log::error('删除权限组数据库异常', [$e->getMessage()]);
+            return Response::response(Response::SQL_ERROR);
+        }
     }
 }

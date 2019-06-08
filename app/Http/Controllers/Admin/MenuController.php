@@ -11,13 +11,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Models\Menu;
 use App\Http\Models\MenuRoles;
 use App\Http\Models\Roles;
-use App\Library\ErrorCode;
+use App\Library\Response;
 use App\Service\RouteService;
 use App\Validate\MenuStoreValidate;
 use App\Validate\MenuUpdateValidate;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class MenuController extends Controller
 {
@@ -51,7 +52,7 @@ class MenuController extends Controller
         $validate = new MenuStoreValidate($request);
 
         if (!$validate->goCheck()) {
-            return response(['code' => ErrorCode::BAD_REQUEST, 'msg' => $validate->errors->first(), 'data' => []]);
+            return Response::response(Response::PARAM_ERROR, $validate->errors->first());
         }
 
         $params = $validate->requestData;
@@ -77,10 +78,11 @@ class MenuController extends Controller
             MenuRoles::insert($pivot);
 
             DB::commit();
-            return response(['code' => ErrorCode::OK, 'msg' => 'success', 'data' => []]);
+            return Response::response();
         } catch (QueryException $e) {
             DB::rollBack();
-            return response(['code' => ErrorCode::SQL_ERROR, 'msg' => '保存失败', 'data' => []]);
+            Log::error('角色创建数据库异常', [$e->getMessage()]);
+            return Response::response(Response::SQL_ERROR);
         }
     }
 
@@ -121,7 +123,7 @@ class MenuController extends Controller
         $validate = new MenuUpdateValidate($request);
 
         if (!$validate->goCheck()) {
-            return response(['code' => ErrorCode::BAD_REQUEST, 'msg' => $validate->errors->first(), 'data' => []]);
+            return Response::response(Response::PARAM_ERROR, $validate->errors->first());
         }
 
         $params = $validate->requestData;
@@ -150,10 +152,46 @@ class MenuController extends Controller
             MenuRoles::insert($pivot);
 
             DB::commit();
-            return response(['code' => ErrorCode::OK, 'msg' => 'success', 'data' => []]);
+            return Response::response();
         } catch (QueryException $e) {
             DB::rollBack();
-            return response(['code' => ErrorCode::SQL_ERROR, 'msg' => '保存失败', 'data' => []]);
+            Log::error('菜单更新数据库异常', [$e->getMessage()]);
+            return Response::response(Response::SQL_ERROR);
+        }
+    }
+
+    public function delete(Request $request)
+    {
+        $id = $request->get('id');
+        if (!$id) {
+            return Response::response(Response::PARAM_ERROR);
+        }
+
+        //初始化的菜单及子菜单不能被删除
+        if ($id == 1) {
+            return Response::response(Response::BAD_REQUEST, '当前菜单不能被删除');
+        }
+
+        $menu = Menu::find($id);
+        if (!$menu || $menu->pid == 1) {
+            return Response::response(Response::BAD_REQUEST, '当前菜单不能被删除');
+        }
+
+        $sub_count = Menu::where('pid', $id)->count();
+        if ($sub_count > 0) {
+            return Response::response(Response::BAD_REQUEST, '请先删除子菜单');
+        }
+
+        DB::beginTransaction();
+        try {
+            Menu::where('id', $id)->delete();
+            MenuRoles::where('menu_id', $id)->delete();
+            DB::commit();
+            return Response::response();
+        } catch (QueryException $e) {
+            DB::rollBack();
+            Log::error('删除菜单数据库异常', [$e->getMessage()]);
+            return Response::response(Response::SQL_ERROR);
         }
     }
 }
