@@ -1,4 +1,4 @@
-# Laravel_rbac_permission
+# Laravel RBAC Permission Admin
 
 基于Laravel框架，前端采用Layui组件（基于Jquery），包含通用RBAC权限的后台管理系统。
 
@@ -23,11 +23,22 @@ password：admin123
 * 基于角色的菜单管理
 * 密码修改
 
-## 效果展示
-
 ## 项目初始化
 
 1. 将项目根目录的rbac.sql文件导入数据库
 2. 配置nginx/apache
 3. 拉取代码，再`composer install`
 4. 由于涉及到初始超管用户密码加密的问题，先使用`.env.example`中的`APP_KEY`进行登录，然后再生成新的`APP_KEY`，重置超管密码
+
+## 效果展示
+
+![](http://docimg.elnmp.com/login.png)
+![](http://docimg.elnmp.com/role_add.png)
+![](http://docimg.elnmp.com/menu_add.png)
+![](http://docimg.elnmp.com/role.png)
+![](http://docimg.elnmp.com/user.png)
+![](http://docimg.elnmp.com/user_add.png)
+![](http://docimg.elnmp.com/permission.png)
+![](http://docimg.elnmp.com/permission_add.png)
+![](http://docimg.elnmp.com/menu.png)
+![](http://docimg.elnmp.com/newpwd.png)

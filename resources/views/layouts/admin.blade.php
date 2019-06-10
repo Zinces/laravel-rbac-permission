@@ -86,7 +86,7 @@
 
     <div class="layui-footer">
         <!-- 底部固定区域 -->
-        © layui.com - 底部固定区域
+        © Laravel RBAC Permission Admin
     </div>
 </div>
 <script src="/js/layui/layui.js"></script>
