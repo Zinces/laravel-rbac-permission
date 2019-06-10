@@ -20,6 +20,8 @@ Route::namespace('Admin')->prefix('admin')->group(function () {
     Route::middleware(['login', 'menu'])->group(function () {
         Route::get('/', 'AdminController@index')->name('admin.index.white');
         Route::post('logout', 'LoginController@logout')->name('admin.logout.white');
+        Route::get('modify_pwd', 'AdminController@modifyPwd')->name('admin.modify_pwd.white');
+        Route::post('new_pwd', 'AdminController@newPwd')->name('admin.new_pwd.white');
         Route::get('forbidden', function () {
             return view('admin.403');
         })->name('admin.forbidden.white');
@@ -31,6 +33,7 @@ Route::namespace('Admin')->prefix('admin')->group(function () {
             Route::post('/user/status', 'UserController@status')->name('admin.user.status');
             Route::get('/user/edit', 'UserController@edit')->name('admin.user.edit');
             Route::post('/user/update', 'UserController@update')->name('admin.user.update');
+            Route::post('/user/reset', 'UserController@reset')->name('admin.user.reset');
 
             Route::get('/permission', 'PermissionController@index')->name('admin.permission.index');
             Route::get('/permission/create', 'PermissionController@create')->name('admin.permission.create');

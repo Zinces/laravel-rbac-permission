@@ -65,6 +65,8 @@
                         <button class="layui-btn layui-btn-warm layui-btn-sm" type="button"
                                 onclick="changeStatus({{ $user->id }})">禁用
                         </button>
+                        <a href="javascript:void(0)" onclick="resetPwd({{ $user->id }})"
+                           class="layui-btn layui-btn-sm layui-btn-warm">重置密码</a>
                     @else
                         <button class="layui-btn layui-btn-normal layui-btn-sm" type="button"
                                 onclick="changeStatus({{ $user->id }})">启用
@@ -111,6 +113,39 @@
                         });
                     }
                 });
+        }
+
+        function resetPwd(id) {
+            layer.confirm('你确定要重置这个用户的密码吗？', {
+                title: '重置密码',
+                btn: ['确定', '取消'] //按钮
+            }, function () {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                });
+                var load = layer.load();
+                $.post("{{ route('admin.user.reset') }}", {id: id},
+                    function (data) {
+                        layer.close(load);
+                        if (data.code === 0) {
+                            layer.msg(data.msg, {
+                                offset: '15px'
+                                , icon: 1
+                                , time: 2000
+                            }, function () {
+                                location.href = '{{ route('admin.user.index') }}';
+                            });
+                        } else {
+                            layer.msg(data.msg, {
+                                offset: '15px'
+                                , icon: 2
+                                , time: 2000
+                            });
+                        }
+                    });
+            });
         }
     </script>
 @endsection

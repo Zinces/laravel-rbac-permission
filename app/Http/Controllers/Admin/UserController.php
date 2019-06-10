@@ -185,4 +185,26 @@ class UserController extends Controller
         }
         return Response::response();
     }
+
+    public function reset(Request $request)
+    {
+        $user_id = $request->get('id');
+        if (!$user_id) {
+            return Response::response(Response::PARAM_ERROR);
+        }
+
+        $user = Users::find($user_id);
+        if (!$user || $user->status != Users::STATUS_ENABLE) {
+            //启用的用户才可以重置密码
+            return Response::response(Response::BAD_REQUEST);
+        }
+
+        //统一重置密码为admin123
+        $user->password = Hash::make('admin123');
+
+        if (!$user->save()) {
+            return Response::response(Response::SQL_ERROR);
+        }
+        return Response::response(Response::OK, '密码已成功重置为：admin123');
+    }
 }

@@ -50,6 +50,10 @@ class LoginController extends Controller
             return Response::response(Response::BAD_REQUEST, '登录名或密码有误');
         }
 
+        if ($user->status == Users::STATUS_DISABLE) {
+            return Response::response(Response::BAD_REQUEST, '您的账户被禁用，请联系管理员');
+        }
+
         session(['user' => $user]);
 
         return Response::response();

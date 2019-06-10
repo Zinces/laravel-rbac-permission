@@ -35,7 +35,7 @@
                 <input type="password" name="password" required placeholder="请输入密码"
                        autocomplete="off" class="layui-input">
             </div>
-            <div class="layui-form-mid layui-word-aux">6-12位，留空表示不修改</div>
+            <div class="layui-form-mid layui-word-aux">6-20位，留空表示不修改</div>
         </div>
         <div class="layui-form-item" style="width: 500px;">
             <label class="layui-form-label">确认密码</label>
@@ -132,8 +132,6 @@
             });
 
             form.on('radio(admin)', function (data) {
-                console.log(data.elem); //得到radio原始DOM对象
-                console.log(data.value); //被点击的radio的value值
                 if (data.value === '1') {
                     $('#roles').hide();
                 } else {
