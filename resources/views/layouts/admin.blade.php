@@ -31,18 +31,19 @@
                     你好，{{ session('user')['name'] }}
                 </a>
                 <dl class="layui-nav-child">
-                <dd><a href="{{ route('admin.modify_pwd.white') }}">修改密码</a></dd>
-                <dd>
-                    <a href="{{ route('admin.logout.white') }}"
-                       onclick="event.preventDefault();
+                    <dd><a href="{{ route('admin.modify_pwd.white') }}">修改密码</a></dd>
+                    <dd>
+                        <a href="{{ route('admin.logout.white') }}"
+                           onclick="event.preventDefault();
                    document.getElementById('logout-form').submit();">
-                        退出
-                    </a>
+                            退出
+                        </a>
 
-                    <form id="logout-form" action="{{ route('admin.logout.white') }}" method="POST" style="display: none;">
-                        {{ csrf_field() }}
-                    </form>
-                </dd>
+                        <form id="logout-form" action="{{ route('admin.logout.white') }}" method="POST"
+                              style="display: none;">
+                            {{ csrf_field() }}
+                        </form>
+                    </dd>
                 </dl>
             </li>
         </ul>
@@ -53,12 +54,20 @@
             <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
             <ul class="layui-nav layui-nav-tree" lay-filter="test">
                 @foreach($menu_tree as $menu)
-                    <li class="layui-nav-item layui-nav-itemed">
+                    <li class="layui-nav-item
+                            @if(key_exists('children',$menu) && in_array($currRouteName,array_column($menu['children'],'route')))
+                            layui-nav-itemed
+                        @endif
+                            ">
                         <a class="" href="javascript:;">{{ $menu['name'] }}</a>
                         <dl class="layui-nav-child">
                             @if(key_exists('children',$menu))
                                 @foreach($menu['children'] as $child)
-                                    <dd><a href="{{ route($child['route']) }}">{{ $child['name'] }}</a></dd>
+                                    <dd
+                                            @if($currRouteName == $child['route'])
+                                            class="layui-this"
+                                            @endif
+                                    ><a href="{{ route($child['route']) }}">{{ $child['name'] }}</a></dd>
                                 @endforeach
                             @endif
                         </dl>

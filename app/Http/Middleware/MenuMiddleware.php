@@ -2,11 +2,13 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Models\Menu;
 use App\Http\Models\MenuRoles;
 use App\Http\Models\Users;
 use App\Http\Models\UsersRoles;
 use Closure;
 use \App\Http\Models\Menu as MenuModel;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 
@@ -23,8 +25,6 @@ class MenuMiddleware
     public function handle($request, Closure $next, $guard = null)
     {
         $user = $request->session()->get('user');
-
-        //$currRouteName = Route::currentRouteName();
 
         $menu_tree = [];
         $menu_arr  = [];
@@ -53,6 +53,19 @@ class MenuMiddleware
         }
 
         View::share('menu_tree', $menu_tree);
+
+        //控制菜单选中效果
+        $currRouteName = Route::currentRouteName();
+        $cache_key = 'menu_route_' . session('user')['id'];
+        if (Menu::where('route', $currRouteName)->count() > 0) {
+            //当前路由为菜单
+            Cache::put($cache_key, $currRouteName, 120);
+        } else {
+            if (Cache::has($cache_key)) {
+                $currRouteName = Cache::get($cache_key);
+            }
+        }
+        View::share('currRouteName', $currRouteName);
 
         return $next($request);
     }

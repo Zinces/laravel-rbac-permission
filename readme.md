@@ -2,11 +2,11 @@
 
 基于Laravel框架，前端采用Layui组件（基于Jquery），包含通用RBAC权限的后台管理系统。
 
-演示站： http://laravel_rbac.elnmp.com
+Demo： http://laravel_rbac.elnmp.com
 
-用户名：admin@admin.com
+user name：admin@admin.com
 
-密码：admin123
+password：admin123
 
 ## 环境要求
 
