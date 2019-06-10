@@ -11,7 +11,7 @@ password：admin123
 ## 环境要求
 
 * PHP >= 7.0
-* Laravel >= 5.5
+* Laravel  5.5.*
 
 ## 基础功能
 
