@@ -44,21 +44,21 @@
                        autocomplete="off" class="layui-input">
             </div>
         </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">状态</label>
-            <div class="layui-input-block">
-                <input type="radio" name="status" value="1" title="启用"
-                       @if($user && $user->status == \App\Http\Models\Users::STATUS_ENABLE)
-                       checked
-                        @endif
-                >
-                <input type="radio" name="status" value="2" title="禁用"
-                       @if($user && $user->status == \App\Http\Models\Users::STATUS_DISABLE)
-                       checked
-                        @endif
-                >
-            </div>
-        </div>
+        {{--<div class="layui-form-item">--}}
+            {{--<label class="layui-form-label">状态</label>--}}
+            {{--<div class="layui-input-block">--}}
+                {{--<input type="radio" name="status" value="1" title="启用"--}}
+                       {{--@if($user && $user->status == \App\Http\Models\Users::STATUS_ENABLE)--}}
+                       {{--checked--}}
+                        {{--@endif--}}
+                {{-->--}}
+                {{--<input type="radio" name="status" value="2" title="禁用"--}}
+                       {{--@if($user && $user->status == \App\Http\Models\Users::STATUS_DISABLE)--}}
+                       {{--checked--}}
+                        {{--@endif--}}
+                {{-->--}}
+            {{--</div>--}}
+        {{--</div>--}}
         <div class="layui-form-item">
             <label class="layui-form-label">是否管理员</label>
             <div class="layui-input-block">

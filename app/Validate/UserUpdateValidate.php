@@ -38,7 +38,7 @@ class UserUpdateValidate extends BaseValidate
             'email'           => 'required|email',
             'password'        => 'nullable|between:6,20',
             'password_repeat' => 'nullable|same:password',
-            'status'          => ['required', Rule::in([1, 2])],
+            //'status'          => ['required', Rule::in([1, 2])],
             'administrator'   => ['required', Rule::in([1, 2])],
             'roles'           => 'sometimes'
         ];

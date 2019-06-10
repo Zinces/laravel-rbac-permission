@@ -115,7 +115,7 @@ class UserController extends Controller
 
             $user->name          = $params['name'];
             $user->email         = $params['email'];
-            $user->status        = $params['status'];
+            //$user->status        = $params['status'];
             $user->administrator = $params['administrator'];
 
             $password = $params['password'] ?? '';
